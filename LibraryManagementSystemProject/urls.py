@@ -16,7 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from LibraryManagementSystemApp.views import Signup, Signin
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("signup/", Signup, name='Signup'),
+    path("signin/", Signin, name='Signin'),
 ]
+
+if settings.DEBUG:
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
