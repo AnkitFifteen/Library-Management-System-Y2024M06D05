@@ -16,6 +16,7 @@ class Books(models.Model):
     Name = models.CharField(max_length=200)
     Author = models.CharField(max_length=200)
     ISBN10 = models.BigIntegerField()
+    Image = models.ImageField(upload_to="media")
     Price = models.IntegerField()
     Description = models.CharField(max_length=500)
 

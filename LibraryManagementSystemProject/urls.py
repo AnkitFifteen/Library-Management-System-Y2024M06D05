@@ -22,7 +22,7 @@ from LibraryManagementSystemApp.views import Signup, Signin, ViewBooks, SearchBo
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("view-pets/", ViewBooks.as_view(), name = "ViewBooks"),
+    path("view-books/", ViewBooks.as_view(), name = "ViewBooks"),
     path("search-books/", SearchBooks, name = 'SearchBooks'),
     path("signup/", Signup, name='Signup'),
     path("signin/", Signin, name='Signin'),
