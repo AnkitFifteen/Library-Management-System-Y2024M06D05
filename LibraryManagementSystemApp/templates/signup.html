@@ -45,7 +45,7 @@
               <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                   <div class="form px-4 pt-5">
-                    <form method="POST" action="{% url 'RegisterUser' %}">
+                    <form method="POST" action="{% url 'Signup' %}">
                       {% csrf_token %}
                       <input type="text" name="Name" class="form-control" placeholder="Name">
                       <input type="email" name="Email" class="form-control" placeholder="Email">
