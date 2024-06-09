@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from LibraryManagementSystemApp.views import Signup, Signin, ViewBooks, SearchBooks
 
 urlpatterns = [
+    path("", Signin, name='Signin'),
     path("admin/", admin.site.urls),
     path("view-books/", ViewBooks.as_view(), name = "ViewBooks"),
     path("search-books/", SearchBooks, name = 'SearchBooks'),
