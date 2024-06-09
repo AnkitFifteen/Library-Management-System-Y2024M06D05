@@ -4,12 +4,12 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password, check_password
-from .models import Customers, Books
+from .models import Customer, Book
 
 
 # Create your views here.
 class ViewBooks(ListView):
-    model = Books
+    model = Book
     template_name = "view-books.html"
     context_object_name = "book_records"
 
@@ -23,7 +23,7 @@ class ViewBooks(ListView):
 def SearchBooks(request):
     if request.method == "POST":
         search_data = request.POST.get('searchquery')
-        book_records = Books.objects.filter(
+        book_records = Book.objects.filter(
             Q(Name__icontains=search_data) | Q(Author__icontains=search_data) | Q(ISBN10__icontains=search_data) | Q(
                 Description__icontains=search_data) | Q(Price__icontains=search_data))
         return render(request, "view-books.html", {'book_records': book_records})
@@ -38,14 +38,14 @@ def Signup(request):
         Phone = request.POST.get("Phone")
         Password = request.POST.get("Password")
         encrypted_password = make_password(Password)
-        email_present = Customers.objects.filter(Email=Email)
+        email_present = Customer.objects.filter(Email=Email)
 
         if email_present:
             return render(request, "signup.html", {"EmailPresent": "Flag for email already used."})
         else:
-            customer_record = Customers(Name=Name, Email=Email, Phone=Phone, Password=encrypted_password)
+            customer_record = Customer(Name=Name, Email=Email, Phone=Phone, Password=encrypted_password)
             customer_record.save()
-            book_records = Books.objects.all()
+            book_records = Book.objects.all()
             return redirect("../signin/")
             # return render(request, "view-books.html", {'book_records':book_records})
 
@@ -57,9 +57,9 @@ def Signin(request):
         Email = request.POST.get("Email")
         Password = request.POST.get("Password")
 
-        Cust = Customers.objects.filter(Email=Email)
+        Cust = Customer.objects.filter(Email=Email)
         if Cust:
-            CustObj = Customers.objects.get(Email=Email)
+            CustObj = Customer.objects.get(Email=Email)
 
             flag = check_password(Password, CustObj.Password)
 
