@@ -18,7 +18,7 @@ class Book(models.Model):
     ISBN10 = models.BigIntegerField()
     Image = models.ImageField(upload_to="media")
     Price = models.IntegerField()
-    Description = models.CharField(max_length=500)
+    Description = models.CharField(max_length=9000)
 
     class Meta:
         db_table = "Book"
