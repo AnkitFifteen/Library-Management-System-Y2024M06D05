@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from LibraryManagementSystemApp.views import Signup, Signin, Signout, ViewBooks, SearchBooks
+from LibraryManagementSystemApp.views import Signup, Signin, Signout, ViewBooks, SearchBooks, BookDetails, AddToCart
 
 urlpatterns = [
     path("", Signin, name='Signin'),
@@ -27,7 +27,9 @@ urlpatterns = [
     path("search-books/", SearchBooks, name = 'SearchBooks'),
     path("signup/", Signup, name='Signup'),
     path("signin/", Signin, name='Signin'),
-    path("signout/", Signout, name="Signout")
+    path("signout/", Signout, name="Signout"),
+    path("book-details/<int:pk>/", BookDetails.as_view(), name = 'BookDetails'),
+    path("add-to-cart/", AddToCart, name = 'AddToCart'),
 ]
 
 if settings.DEBUG:

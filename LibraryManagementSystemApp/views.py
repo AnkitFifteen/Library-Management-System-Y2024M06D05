@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password, check_password
-from .models import Customer, Book
+from .models import Customer, Book, Cart
 
 
 # Create your views here.
@@ -21,6 +21,12 @@ class ViewBooks(ListView):
         finally:
             context = super().get_context_data(**kwargs)
             return context
+
+
+class BookDetails(DetailView):
+    model = Book
+    template_name = "book-details.html"
+    context_object_name = "book"
 
 
 def SearchBooks(request):
@@ -78,3 +84,23 @@ def Signin(request):
 def Signout(request):
     del (request.session['sessionvalue'])
     return redirect('../signin/')
+
+
+def AddToCart(request):
+    productid = request.POST.get('ProductID')
+    custsession = request.session['sessionvalue']  # email of customer
+    custobj = Customer.objects.get(Email=custsession)  # fetch record from database table using email
+    custid = custobj.id  # fetch customer id using customer object
+    bobj = Book.objects.get(id=productid)
+
+    flag = Cart.objects.filter(cid=custobj.id, pid=bobj.id)
+    if flag:
+        cartobj = Cart.objects.get(cid=custobj.id, pid=bobj.id)
+        cartobj.quantity = cartobj.quantity + 1
+        cartobj.totalamount = bobj.price * cartobj.quantity
+        cartobj.save()
+    else:
+        cartobj = Cart(cid=custobj, pid=bobj, quantity=1, totalamount=bobj.price * 1)
+        cartobj.save()
+
+    return redirect('../view-books/')
