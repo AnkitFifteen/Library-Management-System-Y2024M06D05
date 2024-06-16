@@ -70,3 +70,7 @@ def Signin(request):
                 return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
         else:
             return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
+
+def Signout(request):
+    del (request.session['sessionvalue'])
+    return redirect('../signin/')
