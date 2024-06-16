@@ -14,10 +14,13 @@ class ViewBooks(ListView):
     context_object_name = "book_records"
 
     def get_context_data(self, **kwargs):
-        data = self.request.session['sessionvalue']
-        context = super().get_context_data(**kwargs)
-        context['session'] = data
-        return context
+        try:
+            data = self.request.session['sessionvalue']
+            context = super().get_context_data(**kwargs)
+            context['session'] = data
+        finally:
+            context = super().get_context_data(**kwargs)
+            return context
 
 
 def SearchBooks(request):
@@ -70,6 +73,7 @@ def Signin(request):
                 return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
         else:
             return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
+
 
 def Signout(request):
     del (request.session['sessionvalue'])
