@@ -1,15 +1,9 @@
 {% extends 'top-nav.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'LMSA/signin.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
-    <title>{% block title %} Signin {% endblock %}</title>
-</head>
-<body>
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static '/LMSA/signin.css' %}">
+{% endblock %}
+{% block title %} Signin {% endblock %}
 {% block content %}
     {% if InvalidInput %}
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -42,9 +36,7 @@
                </div>
         </div>
       </div>
-    <script src="{% static 'LMSA/jquery-3.4.1.slim.min.js' %}"></script>
-    <script src="{% static 'LMSA/bootstrap.min.js' %}"></script>
-    <script src="{% static 'LMSA/popper.min.js' %}"></script>
+    <script src="{% static '/LMSA/jquery-3.4.1.slim.min.js' %}"></script>
+    <script src="{% static '/LMSA/bootstrap.min.js' %}"></script>
+    <script src="{% static '/LMSA/popper.min.js' %}"></script>
 {% endblock %}
-</body>
-</html>

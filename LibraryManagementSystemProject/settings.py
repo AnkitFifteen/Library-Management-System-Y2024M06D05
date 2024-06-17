@@ -118,10 +118,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "/LibraryManagementSystemApp/static/LMSA")
+STATIC_ROOT = ''
 
 STATICFILES_DIRS = [
-    BASE_DIR / "LibraryManagementSystemApp/static/LMSA",
+    BASE_DIR / "LibraryManagementSystemApp/static/",
 ]
 
 # Default primary key field type

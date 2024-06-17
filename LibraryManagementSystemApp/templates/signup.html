@@ -1,14 +1,9 @@
 {% extends 'top-nav.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'LMSA/signup.css' %}">
-    <title>{% block title %} Signup {% endblock %}</title>
-</head>
-<body>
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static '/LMSA/signup.css' %}">
+{% endblock %}
+{% block title %} Signup {% endblock %}
 {% block content %}
 {% if EmailPresent %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -46,5 +41,3 @@
     <script src="{% static 'LMSA/bootstrap.min.js' %}"></script>
     <script src="{% static 'LMSA/popper.min.js' %}"></script>
 {% endblock %}
-</body>
-</html>
