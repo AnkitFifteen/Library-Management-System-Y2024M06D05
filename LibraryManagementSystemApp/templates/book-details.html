@@ -1,13 +1,11 @@
 {% extends 'top-nav.html' %}
 {% load static %}
 {% block stylesheet %}
-<link rel="stylesheet" href="{% static '/LMSA/nicepage.css' %}" media="screen">
 <link id="u-theme-google-font" rel="stylesheet" href="{% static '/LMSA/fonts.googleapis.css' %}">
 <link rel="stylesheet" href="{% static '/LMSA/book-details.css' %}">
 {% endblock %}
 {% block title %} Book Details {% endblock %}
 {% block content %}
-<div class="u-body">
     <section class="u-align-center u-clearfix u-section-2" id="carousel_6954">
       <div class="u-clearfix u-sheet u-valign-middle-lg u-sheet-1">
         <div class="u-align-center-md u-align-center-sm u-align-center-xs u-container-style u-expanded-width u-grey-5 u-product u-product-1">
@@ -17,17 +15,17 @@
               <div class="u-container-layout u-valign-middle-xl u-valign-middle-xs u-valign-top-lg u-valign-top-md u-valign-top-sm u-container-layout-2"><!--product_title-->
                 <h2 class="u-product-control u-text u-text-default u-text-1">
                   <a class="u-product-title-link" href="#">{{ book.Name }}</a>
-                </h2><!--/product_title--><!--product_price-->
+                </h2>
                 <div class="u-product-control u-product-price u-product-price-1">
-                  <div class="u-price-wrapper u-spacing-10"><!--product_old_price-->
-                    <div class="u-price" style="font-size: 4.5rem; font-weight: 700;"><!--product_regular_price_content-->₹ {{ book.Price }}<!--/product_regular_price_content--></div><!--/product_regular_price-->
+                  <div class="u-price-wrapper u-spacing-10">
+                    <div class="u-price" style="font-size: 4.5rem; font-weight: 700;">
                   </div>
-                </div><!--/product_price--><!--product_content-->
+                </div>
                 <div class="u-product-control u-product-desc u-text u-text-black u-text-2"><!--product_content_content-->
                   <p>⦿ Description: {{ book.Description }}</p>
                   <p>⦿ ISBN10: {{ book.ISBN10 }}</p>
                   <p>⦿ Author: {{ book.Author }}</p>
-                </div><!--/product_content--><!--product_button--><!--options_json--><!--{"clickType":"add-to-cart","content":""}--><!--/options_json-->
+                </div>
                 <a href="#" class="u-btn u-button-style u-hover-palette-1-dark-1 u-palette-1-base u-product-control u-btn-1"><!--product_button_content-->Add to Cart<!--/product_button_content--></a><!--/product_button-->
               </div>
             </div>
@@ -35,5 +33,4 @@
         </div>
       </div>
     </section>
-</div>
 {% endblock %}
