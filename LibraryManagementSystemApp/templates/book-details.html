@@ -1,18 +1,13 @@
 {% extends 'top-nav.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html style="font-size: 16px;">
-  <head>
-    <link rel="stylesheet" href="{% static 'LMSA/nicepage.css' %}" media="screen">
-    <link id="u-theme-google-font" rel="stylesheet" href="{% static 'LMSA/fonts.googleapis.css' %}">
-    <link rel="stylesheet" href="{% static 'LMSA/book-details.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-    <meta name="keywords" content="Book Details">
-    <title>{% block title %} Book Details {% endblock %}</title>
-</head>
-  <body class="u-body">
-    {% block content %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static '/LMSA/nicepage.css' %}" media="screen">
+<link id="u-theme-google-font" rel="stylesheet" href="{% static '/LMSA/fonts.googleapis.css' %}">
+<link rel="stylesheet" href="{% static '/LMSA/book-details.css' %}">
+{% endblock %}
+{% block title %} Book Details {% endblock %}
+{% block content %}
+<div class="u-body">
     <section class="u-align-center u-clearfix u-section-2" id="carousel_6954">
       <div class="u-clearfix u-sheet u-valign-middle-lg u-sheet-1">
         <div class="u-align-center-md u-align-center-sm u-align-center-xs u-container-style u-expanded-width u-grey-5 u-product u-product-1">
@@ -37,9 +32,8 @@
               </div>
             </div>
           </div>
-        </div><!--/product_item--><!--/product-->
+        </div>
       </div>
     </section>
-    {% endblock %}
-  </body>
-</html>
+</div>
+{% endblock %}
