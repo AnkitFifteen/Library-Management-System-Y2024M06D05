@@ -14,12 +14,13 @@ class ViewBooks(ListView):
     context_object_name = "book_records"
 
     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         try:
             data = self.request.session['sessionvalue']
-            context = super().get_context_data(**kwargs)
+            # context = super().get_context_data(**kwargs)
             context['session'] = data
+            return context
         finally:
-            context = super().get_context_data(**kwargs)
             return context
 
 
@@ -67,14 +68,15 @@ def Signin(request):
         Password = request.POST.get("Password")
 
         Cust = Customer.objects.filter(Email=Email)
-        if Cust:
+        if Cust.exists():
             CustObj = Customer.objects.get(Email=Email)
 
             flag = check_password(Password, CustObj.Password)
 
             if flag:
                 request.session["sessionvalue"] = CustObj.Name
-                return render(request, "view-books.html", {"session": request.session["sessionvalue"]})
+                book_records = Book.objects.all()
+                return render(request, "view-books.html", {"session": request.session["sessionvalue"],'book_records':book_records})
             else:
                 return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
         else:
