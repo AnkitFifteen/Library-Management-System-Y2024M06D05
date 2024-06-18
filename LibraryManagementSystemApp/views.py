@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password, check_password
@@ -75,8 +75,9 @@ def Signin(request):
 
             if flag:
                 request.session["sessionvalue"] = CustObj.Name
-                book_records = Book.objects.all()
-                render(request, "view-books.html", {"session": request.session["sessionvalue"],'book_records':book_records})
+                # book_records = Book.objects.all()
+                return redirect('ViewBooks')
+                # return render(request, "view-books.html", {"session": request.session["sessionvalue"],'book_records':book_records})
             else:
                 return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
         else:
