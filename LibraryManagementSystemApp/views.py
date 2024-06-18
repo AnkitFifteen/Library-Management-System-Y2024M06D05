@@ -76,7 +76,7 @@ def Signin(request):
             if flag:
                 request.session["sessionvalue"] = CustObj.Name
                 book_records = Book.objects.all()
-                return render(request, "view-books.html", {"session": request.session["sessionvalue"],'book_records':book_records})
+                render(request, "view-books.html", {"session": request.session["sessionvalue"],'book_records':book_records})
             else:
                 return render(request, "signin.html", {"InvalidInput": "Flag for invalid input."})
         else:
