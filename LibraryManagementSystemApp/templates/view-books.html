@@ -33,7 +33,7 @@
                             <form method = "POST" action="{% url 'AddToCart' %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="ProductID" value="{{ book.id }}">
-                                <button class="btn btn-outline-primary btn-sm mt-2 col-md-12" type="button">Add to cart!</button>
+                                <button class="btn btn-outline-primary btn-sm mt-2 col-md-12" type="submit">Add to cart!</button>
                             </form>
                         </div>
                     </div>

@@ -75,6 +75,7 @@ def Signin(request):
 
             if flag:
                 request.session["sessionvalue"] = CustObj.Name
+                request.session["sessionemail"] = CustObj.Email
                 # book_records = Book.objects.all()
                 return redirect('ViewBooks')
                 # return render(request, "view-books.html", {"session": request.session["sessionvalue"],'book_records':book_records})
@@ -90,20 +91,78 @@ def Signout(request):
 
 
 def AddToCart(request):
-    productid = request.POST.get('ProductID')
-    custsession = request.session['sessionvalue']  # email of customer
-    custobj = Customer.objects.get(Email=custsession)  # fetch record from database table using email
-    custid = custobj.id  # fetch customer id using customer object
-    bobj = Book.objects.get(id=productid)
+    if request.method == "GET" or not request.session["sessionvalue"]:
+        return redirect('../signin/')
+    
+    if request.method == "POST" and request.session["sessionvalue"]:
+        productid = request.POST.get('ProductID')
+        sessionemail = request.session['sessionemail']  # email of customer
+        custobj = Customer.objects.get(Email=sessionemail)  # fetch record from database table using email
+        custid = custobj.id  # fetch customer id using customer object
+        bobj = Book.objects.get(id=productid)
 
-    flag = Cart.objects.filter(cid=custobj.id, pid=bobj.id)
-    if flag:
-        cartobj = Cart.objects.get(cid=custobj.id, pid=bobj.id)
-        cartobj.quantity = cartobj.quantity + 1
-        cartobj.totalamount = bobj.price * cartobj.quantity
-        cartobj.save()
-    else:
-        cartobj = Cart(cid=custobj, pid=bobj, quantity=1, totalamount=bobj.price * 1)
-        cartobj.save()
+        flag = Cart.objects.filter(CID=custobj.id, PID=bobj.id)
+        if flag:
+            cartobj = Cart.objects.get(CID=custobj.id, PID=bobj.id)
+            cartobj.Quantity = cartobj.Quantity + 1
+            cartobj.Total_Amount = bobj.Price * cartobj.Quantity
+            cartobj.save()
+        else:
+            cartobj = Cart(CID=custobj, PID=bobj, Quantity=1, Total_Amount=bobj.Price * 1)
+            cartobj.save()
 
-    return redirect('../view-books/')
+        return redirect('../view-books/')
+    
+    
+def ViewCart(request):
+    if request.method == "GET" and not request.session["sessionvalue"]:
+        return redirect('../signin/')
+    
+    if request.method == "GET" and request.session["sessionvalue"]:
+        sessionemail = request.session['sessionemail'] #email of customer
+        custobj = Customer.objects.get(Email = sessionemail) 
+        cart_products = Cart.objects.filter(CID = custobj.id)
+
+        return render(request,'cart.html',{'cart_products':cart_products})
+    
+    
+def ChangeQuantity(request):
+    if request.method == "GET" or not request.session["sessionvalue"]:
+        return redirect('../signin/')
+    
+    if request.method == "POST" and request.session["sessionvalue"]:
+        cemail = request.session['sessionemail']
+        pid = request.POST.get('PID')
+        custobj = Customer.objects.get(Email = cemail)
+        pobj = Book.objects.get(id = 'PID')
+        cartobj = Cart.objects.get(CID = custobj.id, PID=pobj.id)
+
+        if request.POST.get('changequantitybutton') == '+':
+            cartobj.Quantity = cartobj.Quantity + 1
+            cartobj.Total_Amount = cartobj.Quantity * pobj.Price
+            cartobj.save()
+
+        elif request.POST.get('changequantitybutton') == '-':
+            if cartobj.Quantity == 1:
+                cartobj.delete()
+            else :
+                cartobj.Quantity = cartobj.Quantity - 1
+                cartobj.Total_Amount = cartobj.Quantity * pobj.Price
+                print(cartobj.Total_Amount)
+                cartobj.save()
+
+        return redirect('../view-cart/')
+    
+
+def OrderCheckout(request):
+    if request.method == "GET" and not request.session["sessionvalue"]:
+        return redirect('../signin/')
+    
+    if request.method == "GET" and request.session["sessionvalue"]:
+        sessionemail = request.session['sessionemail'] 
+        custobj = Customer.objects.get(email = sessionemail) 
+        cart_products = Cart.objects.filter(cid = custobj.id)
+        total_amount = 0
+        for product in cart_products:
+            total_amount += product.totalamount
+        return render(request,'order-checkout.html',{'cart_products':cart_products, 'total_amount':total_amount})
