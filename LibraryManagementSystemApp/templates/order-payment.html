@@ -1,0 +1,178 @@
+{% extends 'top-nav.html' %}
+{% load static %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static '/LMSA/form-validation.css' %}">
+{% endblock %}
+{% block title %} Order Payment {% endblock %}
+{% block content %}
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <script>
+            var amount= {{ total_amount }}
+            function initPayPalButton() 
+            {
+              document.getElementById("PayPal").style.visibility ="hidden";
+              paypal.Buttons({
+                style: {
+                        shape: 'rect',
+                        color: 'gold',
+                        layout: 'vertical',
+                        label: 'paypal',
+                      },
+  
+            createOrder: function(data, actions) 
+            {
+              return actions.order.create({
+              purchase_units: [{"amount":{"currency_code":"USD","value":amount}}]
+              });
+            },
+    
+            onApprove: function(data, actions) 
+            {
+              return actions.order.capture().then(function(orderData) 
+              {
+                console.log(orderData)
+    
+                // Full available details
+                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                var data = orderData['id']
+                // var f = document.createElement('form');
+                // f.action='http://localhost:8000/paymentsucess/';
+                // f.method='GET';
+                // f.target='_blank';
+
+                // var i=document.createElement('input');
+                // i.type='hidden';
+                // i.name='fragment';
+                // i.value=orderData['id'];
+                // f.appendChild(i);
+
+                // document.body.appendChild(f);
+
+                // f.submit();
+                odata = {{orderobj.ordernumber}};
+                window.location.replace("paymentsucess/"+data+"/"+odata+"/");
+              });
+            },
+    
+            onError: function(err) { console.log(err); }
+            }).render('#paypal-button-container');
+          }
+          window.onload = initPayPalButton;
+    </script>
+    <div class="container">
+        <div class="py-5 text-center">
+          <h2>Payment</h2>
+          <p class="lead"></p>
+        </div>
+  
+        <div class="row">
+          <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted">Your cart</span>
+              <span class="badge badge-secondary badge-pill">{{ products_count }}</span>
+            </h4>
+            <ul class="list-group mb-3">
+            {% for product in cart_products %}
+              <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                  <h6 class="my-0">{{ product.pid.name }}</h6>
+                  <small class="text-muted">{{ product.pid.description }}</small>
+                </div>
+                <span class="text-muted">₹ {{ product.pid.price }} x {{ product.quantity }}</span>
+              </li>
+            {% endfor %}
+
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Total (INR)</span>
+                <strong>₹ {{ total_amount }}</strong>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">Billing address</h4>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName">First name:</label> {{ orderobj.firstname }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="lastName">Last name:</label> {{ orderobj.lastname }}
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label for="address">Address:</label> {{ orderobj.address }}
+              </div>
+  
+              <div class="mb-3">
+                <label for="phoneNumber">Phone Number:<span class="text-muted"></span></label>
+                {{ orderobj.phoneno }}
+              </div>
+  
+              <div class="row">
+                <div class="col-md-5 mb-3">
+                  <label for="country">City:</label>
+                  {{ orderobj.city }}
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="state">State:</label>
+                  {{ orderobj.state }}
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label for="zip">PIN Code:</label>
+                  {{ orderobj.pincode }}
+                </div>
+              </div>
+              <hr class="mb-4">
+              <div class="sale my-3"> <div id="paypal-button-container"></div> </div>
+                  <button onclick="initPayPalButton()" name="PayPal" id="PayPal">Do payment</button>
+              </div>
+              <div class="btn_container">
+                <!-- Payment Button -->
+                <button class="btn" id="pay-btn btn-danger">Pay using Razor Pay</button>
+              </div>
+          </div>
+        </div>
+  
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+          <p class="mb-1">© 2017-2019 Pet Store</p>
+          <ul class="list-inline">
+            <li class="list-inline-item"><a href="https://getbootstrap.com/docs/4.1/examples/checkout/#">Privacy</a></li>
+            <li class="list-inline-item"><a href="https://getbootstrap.com/docs/4.1/examples/checkout/#">Terms</a></li>
+            <li class="list-inline-item"><a href="https://getbootstrap.com/docs/4.1/examples/checkout/#">Support</a></li>
+          </ul>
+        </footer>
+      </div>  
+
+      <!-- Razorpay's Javascript code. -->
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      <script>
+        var options = 
+        {
+          // Enter the Key ID generated from the Dashboard
+          key: "rzp_test_Ozn3QNoFqZ6aG9", 
+          amount: 101, 
+          currency: "INR",
+          name: "Pet Store", 
+            
+          // Pass the `id` obtained
+            
+          "handler": function(response) 
+          { 
+            console.log("success");
+            window.location.href = `http://localhost:8000/paymentsuccess?order_id={{orderobj.ordernumber}}&payment_id=${response.razorpay_payment_id}`
+          }
+        };
+          
+        // initialise razorpay with the options.
+        var rzp1 = new Razorpay(options);
+          
+        // add event listener to the payment button.
+        document.getElementById("pay-btn").onclick = function (e) 
+        {
+          rzp1.open();
+          e.preventDefault();
+        };
+      </script>
+{% endblock %}
