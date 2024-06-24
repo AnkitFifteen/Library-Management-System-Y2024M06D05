@@ -29,11 +29,16 @@
                         <div class="d-flex flex-row align-items-center">
                             <form method="POST" action="{% url 'ChangeQuantity' %}">
                                     {% csrf_token %}
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-16 mb-3">
                                         <div class="qty-container">
-                                            <button class="qty-btn-minus btn-light" type="submit" name="changequantitybutton" value="-"><i class="fa fa-minus">-</i></button>
-                                            <input type="number" value="0" class="input-qty" value="{{product.PID.id}}" name="PID"/>
-                                            <button class="qty-btn-plus btn-light" type="submit" name="changequantitybutton" value="+"><i class="fa fa-plus">+</i></button>
+                                            <div class="quantity">
+                                              <button class="minus" aria-label="Decrease" type="submit" name="changequantitybutton">&minus;</button>
+                                              <input type="number" class="input-box" value="{{product.PID.id}}" name="PID">
+                                              <button class="plus" aria-label="Increase" type="submit" name="changequantitybutton">&plus;</button>
+                                            </div>
+{#                                            <button class="qty-btn-minus btn-light" type="submit" name="changequantitybutton" value="-"><i class="fa fa-minus">-</i></button>#}
+{#                                            <input type="number" value="0" class="input-qty" value="{{product.PID.id}}" name="PID"/>#}
+{#                                            <button class="qty-btn-plus btn-light" type="submit" name="changequantitybutton" value="+"><i class="fa fa-plus">+</i></button>#}
                                         </div>
                                     </div>
 

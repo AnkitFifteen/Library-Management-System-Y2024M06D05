@@ -5,12 +5,50 @@ i{font-size: 16px;color: red}
 .dot{height: 7px;width: 7px;margin-left: 6px;margin-right: 6px;margin-top: 3px;background-color: blue;border-radius: 50%;display: inline-block}
 .spec-1{color: #938787;font-size: 15px}
 h5{font-weight: 400}.para{font-size: 16px}
-.fa-plus-circle:before{content:"\f055"}
-.fa-plus:before{content:"\f067"}
-.fa-plus-square:before{content:"\f0fe"}
-.fa-plus-square-o:before{content:"\f196"}
-.fa-minus-circle:before{content:"\f056"}
-.fa-minus:before{content:"\f068"}
-.fa-minus-square:before{content:"\f146"}
-.fa-minus-square-o:before{content:"\f147"}
-.fa{display:inline-block;font:normal normal normal 14px/1 FontAwesome;font-size:inherit;text-rendering:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+* {
+  box-sizing: border-box;
+}
+
+.quantity {
+  display: flex;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quantity button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  width: 30px;
+  height: auto;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.quantity button:hover {
+  background-color: #2980b9;
+}
+
+.input-box {
+  width: 40px;
+  text-align: center;
+  border: none;
+  padding: 8px 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Hide the number input spin buttons */
+.input-box::-webkit-inner-spin-button,
+.input-box::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-box[type="number"] {
+  -moz-appearance: textfield;
+}

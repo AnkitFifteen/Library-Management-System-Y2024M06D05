@@ -134,7 +134,7 @@ def ChangeQuantity(request):
         cemail = request.session['sessionemail']
         pid = request.POST.get('PID')
         custobj = Customer.objects.get(Email = cemail)
-        pobj = Book.objects.get(id = 'PID')
+        pobj = Book.objects.get(id = pid)
         cartobj = Cart.objects.get(CID = custobj.id, PID=pobj.id)
 
         if request.POST.get('changequantitybutton') == '+':
@@ -145,7 +145,7 @@ def ChangeQuantity(request):
         elif request.POST.get('changequantitybutton') == '-':
             if cartobj.Quantity == 1:
                 cartobj.delete()
-            else :
+            else:
                 cartobj.Quantity = cartobj.Quantity - 1
                 cartobj.Total_Amount = cartobj.Quantity * pobj.Price
                 print(cartobj.Total_Amount)
