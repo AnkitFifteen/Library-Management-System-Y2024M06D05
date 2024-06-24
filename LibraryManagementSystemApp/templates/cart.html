@@ -32,33 +32,25 @@
                                     <div class="col-md-16 mb-3">
                                         <div class="qty-container">
                                             <div class="quantity">
-                                              <button class="minus" aria-label="Decrease" type="submit" name="changequantitybutton">&minus;</button>
-                                              <input type="number" class="input-box" value="{{product.PID.id}}" name="PID">
-                                              <button class="plus" aria-label="Increase" type="submit" name="changequantitybutton">&plus;</button>
+                                              <button class="minus" aria-label="Decrease" type="submit" name="changequantitybutton" value="-">&minus;</button>
+                                                <input type="hidden" class="input-box" value="{{product.PID_id}}" name="PID">
+                                              <input type="number" class="input-box" value="{{product.Quantity}}" name="" readonly>
+                                              <button class="plus" aria-label="Increase" type="submit" name="changequantitybutton" value="+">&plus;</button>
                                             </div>
-{#                                            <button class="qty-btn-minus btn-light" type="submit" name="changequantitybutton" value="-"><i class="fa fa-minus">-</i></button>#}
-{#                                            <input type="number" value="0" class="input-qty" value="{{product.PID.id}}" name="PID"/>#}
-{#                                            <button class="qty-btn-plus btn-light" type="submit" name="changequantitybutton" value="+"><i class="fa fa-plus">+</i></button>#}
                                         </div>
                                     </div>
-
-                                    <!-- <button type="button" class="btn btn-warning" name="changequantitybutton" value="-">-</button> -->
-                                    <!-- <button type="submit" name="changequantitybutton" value="-"></button> -->
-                                    <!-- <input type="number" value="{{product.PID.id}}" name="PID" value=0> -->
-                                    <!-- <h4 class="mr-1">Quantity : {{product.Quantity}}</h4> -->
-                                    <!-- <button type="button" class="btn btn-warning" name="changequantitybutton" value="+">+</button> -->
-                                
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
+        </div>
+        <a href="{% url 'OrderCheckout' %}" class="btn btn-primary btn-lg btn-block mt-5" role="button">
+            Place Order
+            </a><br>
+        </div>
     </div>
-    <br>
-    <a href="{% url 'OrderCheckout' %}" class="btn btn-primary btn-lg btn-block" role="button">
-        Place Order
-   </a>
     <script src="{% static '/LMSA/jquery-3.4.1.slim.min.js' %}"></script>
     <script src="{% static '/LMSA/bootstrap.min.js' %}"></script>
     <script src="{% static '/LMSA/popper.min.js' %}"></script>
