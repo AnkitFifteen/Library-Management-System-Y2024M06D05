@@ -186,28 +186,28 @@ def PlaceOrder(request):
 
     datev = date.today()
     print(datev)
-    orderobj = Order(firstname=first_name, lastname=last_name, address=address, city=city, state=state, pincode=pincode,
-                     phoneno=phoneno, orderdate=datev)
+    orderobj = Order(First_Name=first_name, Last_Name=last_name, Address=address, City=city, State=state, Pincode=pincode,
+                     Phone_Number=phoneno, Order_Date=datev)
     orderobj.save()
 
     order_no = str(orderobj.id) + str(datev).replace('-', '')
     orderobj.ordernumber = order_no
     orderobj.save()
 
-    custsession = request.session['sessionvalue']
-    custobj = Customer.objects.get(email=custsession)
-    cart_products = Cart.objects.filter(cid=custobj.id)
+    custsession = request.session['sessionemail']
+    custobj = Customer.objects.get(Email=custsession)
+    cart_products = Cart.objects.filter(CID=custobj.id)
 
     products_count = 0
     total_amount = 0
     for product in cart_products:
-        total_amount += product.totalamount
+        total_amount += product.Total_Amount
         products_count += 1
 
     from django.core.mail import EmailMessage
 
     sm = EmailMessage('Order placed',
-                      'Order placed from pet store application. Total bill for your order is Rs.' + str(total_amount),
+                      'Order placed from book store application. Total bill for your order is Rs.' + str(total_amount),
                       to=['retroankit@gmail.com'])
     sm.send()
 
