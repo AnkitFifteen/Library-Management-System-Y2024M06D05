@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from LibraryManagementSystemApp.views import Signup, Signin, Signout, ViewBooks, SearchBooks, BookDetails, AddToCart, ViewCart, ChangeQuantity, OrderCheckout, PlaceOrder, PlacePayUOrder, PaymentSuccess
+from LibraryManagementSystemApp.views import Signup, Signin, Signout, ViewBooks, SearchBooks, BookDetails, AddToCart, ViewCart, ChangeQuantity, OrderCheckout, PlaceOrder, PlacePayUOrder, Payment
 
 urlpatterns = [
     path("", Signin, name='Signin'),
@@ -35,7 +35,7 @@ urlpatterns = [
     path('order-checkout/', OrderCheckout, name='OrderCheckout'),
     path('place-order/', PlaceOrder, name='PlaceOrder'),
     path('place-payu-order/', PlacePayUOrder, name='PlacePayUOrder'),
-    path("payment-success/orderID/transactionID/", PaymentSuccess, name="PaymentSuccess"),
+    path("payment-success/orderID/transactionID/", Payment, name="Payment"),
 ]
 
 if settings.DEBUG:

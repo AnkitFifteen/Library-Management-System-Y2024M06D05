@@ -94,7 +94,7 @@ def Signout(request):
 def AddToCart(request):
     if request.method == "GET" or not request.session["sessionvalue"]:
         return redirect('../signin/')
-    
+
     if request.method == "POST" and request.session["sessionvalue"]:
         productid = request.POST.get('ProductID')
         sessionemail = request.session['sessionemail']  # email of customer
@@ -113,30 +113,30 @@ def AddToCart(request):
             cartobj.save()
 
         return redirect('../view-books/')
-    
-    
+
+
 def ViewCart(request):
     if request.method == "GET" and not request.session["sessionvalue"]:
         return redirect('../signin/')
-    
-    if request.method == "GET" and request.session["sessionvalue"]:
-        sessionemail = request.session['sessionemail'] #email of customer
-        custobj = Customer.objects.get(Email = sessionemail) 
-        cart_products = Cart.objects.filter(CID = custobj.id)
 
-        return render(request,'cart.html',{'cart_products':cart_products})
-    
-    
+    if request.method == "GET" and request.session["sessionvalue"]:
+        sessionemail = request.session['sessionemail']  #email of customer
+        custobj = Customer.objects.get(Email=sessionemail)
+        cart_products = Cart.objects.filter(CID=custobj.id)
+
+        return render(request, 'cart.html', {'cart_products': cart_products})
+
+
 def ChangeQuantity(request):
     if request.method == "GET" or not request.session["sessionvalue"]:
         return redirect('../signin/')
-    
+
     if request.method == "POST" and request.session["sessionvalue"]:
         cemail = request.session['sessionemail']
         pid = request.POST.get('PID')
-        custobj = Customer.objects.get(Email = cemail)
-        pobj = Book.objects.get(id = pid)
-        cartobj = Cart.objects.get(CID = custobj.id, PID=pobj.id)
+        custobj = Customer.objects.get(Email=cemail)
+        pobj = Book.objects.get(id=pid)
+        cartobj = Cart.objects.get(CID=custobj.id, PID=pobj.id)
 
         if request.POST.get('changequantitybutton') == '+':
             cartobj.Quantity = cartobj.Quantity + 1
@@ -153,24 +153,27 @@ def ChangeQuantity(request):
                 cartobj.save()
 
         return redirect('../view-cart/')
-    
+
 
 def OrderCheckout(request):
     if request.method == "GET" and not request.session["sessionvalue"]:
         return redirect('../signin/')
-    
+
     if request.method == "GET" and request.session["sessionvalue"]:
-        sessionemail = request.session['sessionemail'] 
-        custobj = Customer.objects.get(Email = sessionemail)
-        cart_products = Cart.objects.filter(CID = custobj.id)
+        sessionemail = request.session['sessionemail']
+        custobj = Customer.objects.get(Email=sessionemail)
+        cart_products = Cart.objects.filter(CID=custobj.id)
         total_amount = 0
+        no_of_products = 0
         for product in cart_products:
             total_amount += product.Total_Amount
-        return render(request,'order-checkout.html',{'cart_products':cart_products, 'total_amount':total_amount})
+            no_of_products += 1
+        return render(request, 'order-checkout.html', {'cart_products': cart_products, 'total_amount': total_amount, 'no_of_products':no_of_products})
 
 
 def PlacePayUOrder(request):
     return render(request, 'place-payu-order.html')
+
 
 def PlaceOrder(request):
     first_name = request.POST.get('firstName')
@@ -250,13 +253,13 @@ def Payment(request, orderID, transactionID):
         total_amount += product.totalamount
     cart_products.delete()
 
-    payment_object = Payment(customerid=customer_query_set.id, oid=orderID, paymentstatus='Paid',
-                             transactionid=transactionID, paymentmode='PayPal')
+    payment_object = Payment(Customer_ID=customer_query_set.id, Order_ID=orderID, Payment_Status='Paid',
+                             Transaction_ID=transactionID, Payment_Mode='PayU')
     payment_object.save()
 
-    order_detail_object = OrderDetail(ordernumber=orderID, customerid=cart_products.cid, productid=cart_products.pid,
-                                      quantity=cart_products.quantity, totalprice=cart_products.totalamount,
-                                      paymentid=payment_object)
+    order_detail_object = OrderDetail(Order_Number=orderID, Customer_ID=cart_products.cid, Product_ID=cart_products.pid,
+                                      Quantity=cart_products.quantity, Total_Price=cart_products.totalamount,
+                                      Payment_ID=payment_object)
     order_detail_object.save()
 
     return render(request, 'payment-success.html',
