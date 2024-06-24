@@ -4,7 +4,8 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password, check_password
-from .models import Customer, Book, Cart
+from .models import Customer, Book, Cart, OrderDetail, Order
+from datetime import date
 
 
 # Create your views here.
@@ -168,6 +169,9 @@ def OrderCheckout(request):
         return render(request,'order-checkout.html',{'cart_products':cart_products, 'total_amount':total_amount})
 
 
+def PlacePayUOrder(request):
+    return render(request, 'place-payu-order.html')
+
 def PlaceOrder(request):
     first_name = request.POST.get('firstName')
     last_name = request.POST.get('lastName')
@@ -204,27 +208,57 @@ def PlaceOrder(request):
                       to=['retroankit@gmail.com'])
     sm.send()
 
-    # authorize razorpay client with API Keys.
-    razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-
-    currency = 'INR'
-    amount = 20000  # Rs. 200
-
+    # # authorize razorpay client with API Keys.
+    # razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    #
+    # currency = 'INR'
+    # amount = 20000  # Rs. 200
+    #
     # Create a Razorpay Order
-    razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
-
-    # order id of newly created order.
-    razorpay_order_id = razorpay_order['id']
-    callback_url = '../PetView'
+    # razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
+    #
+    # # order id of newly created order.
+    # razorpay_order_id = razorpay_order['id']
+    # callback_url = '../PetView'
 
     # we need to pass these details to frontend.
-    context = {}
-    context['razorpay_order_id'] = razorpay_order_id
-    context['razorpay_merchant_key'] = settings.RAZORPAY_KEY_ID
-    context['razorpay_amount'] = amount
-    context['currency'] = currency
-    context['callback_url'] = callback_url
+    # context = {}
+    # context['razorpay_order_id'] = razorpay_order_id
+    # context['razorpay_merchant_key'] = settings.RAZORPAY_KEY_ID
+    # context['razorpay_amount'] = amount
+    # context['currency'] = currency
+    # context['callback_url'] = callback_url
 
     return render(request, 'order-payment.html',
                   {'orderobj': orderobj, 'session': custsession, 'cart_products': cart_products,
                    'total_amount': total_amount, 'products_count': products_count})
+
+
+def Payment(request, orderID, transactionID):
+    orderid = request.GET.get('order_id')
+    tid = request.GET.get('payment_id')
+
+    ordered_products = Order.objects.get(orderid=orderID)
+    ordered_products.orderstatus = "ORDER PLACED"
+
+    custsession = request.session['sessionvalue']
+    customer_query_set = Customer.objects.get(email=custsession)
+
+    cart_products = Cart.objects.filter(cid=customer_query_set.id)
+    total_amount = 0
+    for product in cart_products:
+        total_amount += product.totalamount
+    cart_products.delete()
+
+    payment_object = Payment(customerid=customer_query_set.id, oid=orderID, paymentstatus='Paid',
+                             transactionid=transactionID, paymentmode='PayPal')
+    payment_object.save()
+
+    order_detail_object = OrderDetail(ordernumber=orderID, customerid=cart_products.cid, productid=cart_products.pid,
+                                      quantity=cart_products.quantity, totalprice=cart_products.totalamount,
+                                      paymentid=payment_object)
+    order_detail_object.save()
+
+    return render(request, 'payment-success.html',
+                  {'ordered_products': ordered_products, 'session': custsession, 'cart_products': cart_products,
+                   'total_amount': total_amount, 'transactionID': transactionID})
