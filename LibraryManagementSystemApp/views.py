@@ -160,9 +160,71 @@ def OrderCheckout(request):
     
     if request.method == "GET" and request.session["sessionvalue"]:
         sessionemail = request.session['sessionemail'] 
-        custobj = Customer.objects.get(email = sessionemail) 
-        cart_products = Cart.objects.filter(cid = custobj.id)
+        custobj = Customer.objects.get(Email = sessionemail)
+        cart_products = Cart.objects.filter(CID = custobj.id)
         total_amount = 0
         for product in cart_products:
-            total_amount += product.totalamount
+            total_amount += product.Total_Amount
         return render(request,'order-checkout.html',{'cart_products':cart_products, 'total_amount':total_amount})
+
+
+def PlaceOrder(request):
+    first_name = request.POST.get('firstName')
+    last_name = request.POST.get('lastName')
+    address = request.POST.get('address')
+    city = request.POST.get('city')
+    state = request.POST.get('state')
+    pincode = request.POST.get('pinCode')
+    phoneno = request.POST.get('phoneNumber')
+
+    datev = date.today()
+    print(datev)
+    orderobj = Order(firstname=first_name, lastname=last_name, address=address, city=city, state=state, pincode=pincode,
+                     phoneno=phoneno, orderdate=datev)
+    orderobj.save()
+
+    order_no = str(orderobj.id) + str(datev).replace('-', '')
+    orderobj.ordernumber = order_no
+    orderobj.save()
+
+    custsession = request.session['sessionvalue']
+    custobj = Customer.objects.get(email=custsession)
+    cart_products = Cart.objects.filter(cid=custobj.id)
+
+    products_count = 0
+    total_amount = 0
+    for product in cart_products:
+        total_amount += product.totalamount
+        products_count += 1
+
+    from django.core.mail import EmailMessage
+
+    sm = EmailMessage('Order placed',
+                      'Order placed from pet store application. Total bill for your order is Rs.' + str(total_amount),
+                      to=['retroankit@gmail.com'])
+    sm.send()
+
+    # authorize razorpay client with API Keys.
+    razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+    currency = 'INR'
+    amount = 20000  # Rs. 200
+
+    # Create a Razorpay Order
+    razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
+
+    # order id of newly created order.
+    razorpay_order_id = razorpay_order['id']
+    callback_url = '../PetView'
+
+    # we need to pass these details to frontend.
+    context = {}
+    context['razorpay_order_id'] = razorpay_order_id
+    context['razorpay_merchant_key'] = settings.RAZORPAY_KEY_ID
+    context['razorpay_amount'] = amount
+    context['currency'] = currency
+    context['callback_url'] = callback_url
+
+    return render(request, 'order-payment.html',
+                  {'orderobj': orderobj, 'session': custsession, 'cart_products': cart_products,
+                   'total_amount': total_amount, 'products_count': products_count})
