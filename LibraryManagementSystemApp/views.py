@@ -92,10 +92,11 @@ def Signout(request):
 
 
 def AddToCart(request):
-    if request.method == "GET" or not request.session["sessionvalue"]:
-        return redirect('../signin/')
+    session_exists = False
+    if 'sessionemail' in request.session:
+        session_exists = True
 
-    if request.method == "POST" and request.session["sessionvalue"]:
+    if request.method == "POST" and session_exists:
         productid = request.POST.get('ProductID')
         sessionemail = request.session['sessionemail']  # email of customer
         custobj = Customer.objects.get(Email=sessionemail)  # fetch record from database table using email
@@ -113,18 +114,23 @@ def AddToCart(request):
             cartobj.save()
 
         return redirect('../view-books/')
+    else:
+        return redirect('../signin/')
 
 
 def ViewCart(request):
-    if request.method == "GET" and not request.session["sessionvalue"]:
-        return redirect('../signin/')
+    session_exists = False
+    if 'sessionemail' in request.session:
+        session_exists = True
 
-    if request.method == "GET" and request.session["sessionvalue"]:
+    if request.method == "GET" and session_exists:
         sessionemail = request.session['sessionemail']  #email of customer
         custobj = Customer.objects.get(Email=sessionemail)
         cart_products = Cart.objects.filter(CID=custobj.id)
 
         return render(request, 'cart.html', {'cart_products': cart_products})
+    else:
+        return redirect('../signin/')
 
 
 def ChangeQuantity(request):
